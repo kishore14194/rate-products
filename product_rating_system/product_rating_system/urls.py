@@ -18,7 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^rest-auth/', include('rest_auth.urls')),
+    # url(r'^rest-auth/', include('rest_auth.urls')),
     # url(r'^login/', include('manager_login.urls', namespace='login')),
-    url(r'^inventory/', include('manage_inventory.urls', namespace='inventory')),
+    url(r'^product/', include('product.urls', namespace='product')),
 ]

@@ -6,7 +6,7 @@ from django.core.management.commands.runserver import Command as runserver
 
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "inventory.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "product_rating_system.settings")
     try:
         from django.core.management import execute_from_command_line
         runserver.default_port = "9000"
