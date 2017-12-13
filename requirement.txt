@@ -1,1 +1,4 @@
-django==1.10
+Django==1.10
+djangorestframework==3.7.3
+jsonschema==2.6.0
+psycopg2==2.7.3.2
