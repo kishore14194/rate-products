@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 import json
 from django.http import HttpResponse
 from django.shortcuts import render
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 
 from .format_data import format_product
 from .models import ProductDetail
+
+
+def get_pro_obj(pro_id):
+    """Check if product exists"""
+    try:
+        pro_obj = ProductDetail.objects.get(product_id=pro_id)
+    except ProductDetail.DoesNotExist:
+        return None
+
+    return pro_obj
+
 
 class ProductList(APIView):
     permission_classes = (IsAuthenticated,)
@@ -27,8 +37,9 @@ class ProductList(APIView):
         product_list = {"status": "success", "data": active_products_list}
         return HttpResponse(json.dumps(product_list))
 
+
 class ProductAdd(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAdminUser)
 
     def post(self, request, format=None):
         data = json.loads(request.body)
@@ -41,3 +52,17 @@ class ProductAdd(APIView):
             return HttpResponse(json.dumps({"status": "fail", "data": "Failed to add Inventory"}))
 
         return HttpResponse("added")
+
+class DeleteProduct(APIView):
+    permission_classes = (IsAuthenticated, IsAdminUser)
+
+    def delete(self, request, format=None):
+        data = json.loads(request.body)
+        pro_id = data.get('product_id')
+        product_obj = get_pro_obj(pro_id)
+
+        if not product_obj:
+            return HttpResponse("Fail")
+
+        return HttpResponse("pass")
+
