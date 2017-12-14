@@ -2,17 +2,18 @@
 from __future__ import unicode_literals
 
 import json
+import sys
+import traceback
+
 from django.http import HttpResponse
-from django.shortcuts import render
-from rest_framework import mixins, status
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
-import sys, traceback
 
-from product.commons import get_pro_obj, rating_avg
-from .schema import ProductDetailSerializer, ProductRatingSerializer
+from product.commons import get_pro_obj, rating_avg, check_users_order
 from .format_data import format_product
 from .models import ProductDetail, ProductRating
+from .schema import ProductDetailSerializer, ProductRatingSerializer
 
 
 class ProductList(APIView):
@@ -88,6 +89,7 @@ class RateProduct(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
+        user = request.user
 
         serializer = ProductRatingSerializer(data=data)
         valid = serializer.is_valid()
@@ -104,11 +106,17 @@ class RateProduct(APIView):
             return HttpResponse((json.dumps({"status": "fail", "data": "Invalid Product Id"})),
                                 status=status.HTTP_400_BAD_REQUEST)
 
+        user_order = check_users_order(product_obj, user)
+        if not user_order:
+            return HttpResponse((json.dumps({"status": "fail", "data": "Sorry! You must have purchased the"
+                                                                       " product before rating it."})),
+                                status=status.HTTP_400_BAD_REQUEST)
+
         try:
             """Checks if user already rated the product"""
-            rating_obj = ProductRating.objects.get(product=product_obj, added_by=request.user)
+            rating_obj = ProductRating.objects.get(product=product_obj, added_by=user)
         except ProductRating.DoesNotExist:
-            create_rating = ProductRating.objects.create(product=product_obj, rating=rating_val, added_by=request.user)
+            create_rating = ProductRating.objects.create(product=product_obj, rating=rating_val, added_by=user)
             create_rating.save()
             return HttpResponse((json.dumps({"status": "success", "data": "Thank You for rating the product"})),
                                 status=status.HTTP_200_OK)
