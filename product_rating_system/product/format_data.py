@@ -31,3 +31,7 @@ def generate_pro_id(product_name):
 
     return pro_val
 
+
+def rating_average():
+    pass
+

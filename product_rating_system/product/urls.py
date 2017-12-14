@@ -8,4 +8,5 @@ urlpatterns = [
     # url(r'^inactive/$', views.InventoryNotActive.as_view(), name='inactive'),
     # url(r'^approve/$', views.InventoryApprove.as_view(), name='approve'),
     url(r'^remove/$', views.DeleteProduct.as_view(), name='remove'),
+    url(r'^rate/$', views.RateProduct.as_view(), name='remove'),
 ]
