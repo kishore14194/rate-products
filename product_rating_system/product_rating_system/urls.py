@@ -21,4 +21,5 @@ urlpatterns = [
     # url(r'^rest-auth/', include('rest_auth.urls')),
     # url(r'^login/', include('manager_login.urls', namespace='login')),
     url(r'^product/', include('product.urls', namespace='product')),
+    url(r'^order/', include('orders.urls', namespace='product')),
 ]

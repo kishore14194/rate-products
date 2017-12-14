@@ -11,6 +11,7 @@ def get_pro_obj(pro_id):
 
 
 def rating_avg(product_obj):
+    """ Get average rating for product"""
     rating_list = ProductRating.objects.filter(product=product_obj).values_list('rating', flat=True)
     if rating_list:
         avg_rating = sum(rating_list)/len(rating_list)

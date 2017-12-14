@@ -16,6 +16,7 @@ from .models import ProductDetail, ProductRating
 
 
 class ProductList(APIView):
+    """ Api to get list of products available"""
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):

@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from .models import ProductDetail
+from orders.models import OrdersCart
+from .models import ProductDetail, ProductRating
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -21,5 +22,5 @@ class ProductRatingSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField(required=True, max_value=5, min_value=0)
 
     class Meta:
-        model = ProductDetail
+        model = ProductRating
         fields = ('product_id', 'rating', 'comments')
