@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
+from orders.schema import OrdersCartSerializer
 from product.commons import get_pro_obj, rating_avg
 from .models import OrdersCart, Order
 
@@ -23,6 +24,15 @@ class CreateOrder(APIView):
         product_list = []
 
         for order in order_list:
+
+            serializer = OrdersCartSerializer(data=order)
+            valid = serializer.is_valid()
+            if not valid:
+                return HttpResponse((json.dumps({"status": "fail", "data": serializer.errors})),
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+            order = serializer.data
+
             pro_id = order.get('product_id')
             pro_quantity = order.get('quantity')
 
